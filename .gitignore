@@ -1,0 +1,13 @@
+out
+build
+.gradle
+*.iml
+*.ipr
+*.iws
+.idea/inspectionProfiles
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/gradle.xml
+.idea/kotlinc.xml
+.idea/misc.xml
+.idea/workspace.xml
