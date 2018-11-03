@@ -26,8 +26,8 @@ That's it!
 
 Install / Download
 ----
-- Install it directly inside IntelliJ from the plugins settings (click on *Browse repositories...* and search for *Nyan Tray*).
-- Or get the jar and install it manually (click on *Install plugin from disk...*): https://github.com/BoD/NyanTrayIntelliJPlugin/releases/latest
+- Install it directly inside your IDE from the *Plugins* preferences (click on *Browse repositories...* and search for *Nyan Tray*).
+- Or get the zip and install it manually (click on *Install plugin from disk...*): https://github.com/BoD/NyanTrayIntelliJPlugin/releases/latest
 - The plugin page is here: https://plugins.jetbrains.com/plugin/**TODO**
 
 
