@@ -31,6 +31,12 @@ Install / Download
 - The plugin page is here: https://plugins.jetbrains.com/plugin/11286-nyan-tray
 
 
+See also
+----
+
+If you like this plugin, you'll probably also like [this one](https://github.com/batya239/NyanProgressBar) ;)
+
+
 Licence
 ----
 
