@@ -30,29 +30,22 @@ import com.intellij.openapi.progress.TaskInfo
 import com.intellij.openapi.progress.util.AbstractProgressIndicatorBase
 import com.intellij.openapi.progress.util.ProgressWindow
 import com.intellij.openapi.wm.ex.ProgressIndicatorEx
+import java.util.concurrent.atomic.AtomicInteger
 
 class NyanTrayApplicationComponent : ApplicationComponent {
     companion object {
         private const val COMPONENT_NAME = "NyanTray"
     }
 
-    private var progress = 0
-        set(value) {
-            field = value
-            if (field == 0) {
-                Tray.hideIcon()
-            } else {
-                Tray.showIcon()
-            }
-        }
+    private val progressCounter = AtomicInteger(0)
 
     override fun getComponentName() = COMPONENT_NAME
 
     override fun initComponent() {
         val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
         messageBusConnection.subscribe(ProgressWindow.TOPIC, ProgressWindow.Listener { progressWindow ->
-            progress++
             progressWindow.addStateDelegate(ProgressWindowDelegate())
+            progressCounterUpdated(progressCounter.incrementAndGet())
         })
     }
 
@@ -61,9 +54,20 @@ class NyanTrayApplicationComponent : ApplicationComponent {
         override fun isFinished(task: TaskInfo) = true
         override fun wasStarted() = false
         override fun processFinish() = Unit
-
         override fun finish(task: TaskInfo) {
-            progress--
+            progressCounterUpdated(progressCounter.decrementAndGet())
+        }
+    }
+
+    private fun progressCounterUpdated(progressCounterValue: Int) {
+        if (progressCounterValue == 0) {
+            ApplicationManager.getApplication().invokeLater {
+                Tray.hideIcon()
+            }
+        } else {
+            ApplicationManager.getApplication().invokeLater {
+                Tray.showIcon()
+            }
         }
     }
 }
