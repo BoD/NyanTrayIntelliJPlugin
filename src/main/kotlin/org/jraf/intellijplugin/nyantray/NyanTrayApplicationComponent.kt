@@ -61,7 +61,6 @@ class NyanTrayApplicationComponent : ApplicationComponent {
     }
 
     private fun progressCounterUpdated(progressCounterValue: Int) {
-        println(progressCounterValue)
         if (progressCounterValue == 0) {
             SwingUtilities.invokeLater {
                 Tray.hideIcon()
