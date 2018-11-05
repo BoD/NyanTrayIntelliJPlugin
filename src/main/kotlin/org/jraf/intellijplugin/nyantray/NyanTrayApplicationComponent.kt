@@ -31,6 +31,7 @@ import com.intellij.openapi.progress.util.AbstractProgressIndicatorBase
 import com.intellij.openapi.progress.util.ProgressWindow
 import com.intellij.openapi.wm.ex.ProgressIndicatorEx
 import java.util.concurrent.atomic.AtomicInteger
+import javax.swing.SwingUtilities
 
 class NyanTrayApplicationComponent : ApplicationComponent {
     companion object {
@@ -60,12 +61,13 @@ class NyanTrayApplicationComponent : ApplicationComponent {
     }
 
     private fun progressCounterUpdated(progressCounterValue: Int) {
+        println(progressCounterValue)
         if (progressCounterValue == 0) {
-            ApplicationManager.getApplication().invokeLater {
+            SwingUtilities.invokeLater {
                 Tray.hideIcon()
             }
         } else {
-            ApplicationManager.getApplication().invokeLater {
+            SwingUtilities.invokeLater {
                 Tray.showIcon()
             }
         }
