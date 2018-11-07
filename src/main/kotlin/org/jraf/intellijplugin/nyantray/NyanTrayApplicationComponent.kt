@@ -26,6 +26,7 @@ package org.jraf.intellijplugin.nyantray
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ApplicationComponent
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.TaskInfo
 import com.intellij.openapi.progress.util.AbstractProgressIndicatorBase
 import com.intellij.openapi.progress.util.ProgressWindow
@@ -36,6 +37,8 @@ import javax.swing.SwingUtilities
 class NyanTrayApplicationComponent : ApplicationComponent {
     companion object {
         private const val COMPONENT_NAME = "NyanTray"
+
+        private val LOGGER = Logger.getInstance(NyanTrayApplicationComponent::class.java)
     }
 
     private val progressCounter = AtomicInteger(0)
@@ -45,6 +48,7 @@ class NyanTrayApplicationComponent : ApplicationComponent {
     override fun initComponent() {
         val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
         messageBusConnection.subscribe(ProgressWindow.TOPIC, ProgressWindow.Listener { progressWindow ->
+            log("${progressWindow.title} ${progressWindow.text} ${progressWindow.text2} ${progressWindow.userDataString} $progressWindow")
             progressWindow.addStateDelegate(ProgressWindowDelegate())
             progressCounterUpdated(progressCounter.incrementAndGet())
         })
@@ -61,14 +65,22 @@ class NyanTrayApplicationComponent : ApplicationComponent {
     }
 
     private fun progressCounterUpdated(progressCounterValue: Int) {
+        log("progressCounterValue=$progressCounterValue")
         if (progressCounterValue == 0) {
             SwingUtilities.invokeLater {
+                log("hideIcon")
                 Tray.hideIcon()
             }
         } else {
             SwingUtilities.invokeLater {
+                log("showIcon")
                 Tray.showIcon()
             }
         }
+    }
+
+    private fun log(s: String) {
+        LOGGER.info(s)
+        println(s)
     }
 }
