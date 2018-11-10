@@ -34,7 +34,7 @@ import java.awt.TrayIcon
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
 object Tray {
-    private const val INFO = "BoD NyanTray v1.0.2 - https://JRAF.org"
+    private const val INFO = "BoD NyanTray v1.0.3 - https://JRAF.org"
     private const val ANIMATION_DELAY_MS = 128L
     private var animationJob: Job? = null
 

@@ -48,9 +48,26 @@ class NyanTrayApplicationComponent : ApplicationComponent {
     override fun initComponent() {
         val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
         messageBusConnection.subscribe(ProgressWindow.TOPIC, ProgressWindow.Listener { progressWindow ->
-            log("${progressWindow.title} ${progressWindow.text} ${progressWindow.text2} ${progressWindow.userDataString} $progressWindow")
+            log(
+                """
+                ------
+                title: ${progressWindow.title}
+                text: ${progressWindow.text}
+                text2: ${progressWindow.text2}
+                userDataString: ${progressWindow.userDataString}
+                isCanceled: ${progressWindow.isCanceled}
+                isIndeterminate: ${progressWindow.isIndeterminate}
+                isModal: ${progressWindow.isModal}
+                isPopupWasShown: ${progressWindow.isPopupWasShown}
+                isRunning: ${progressWindow.isRunning}
+                isShowing: ${progressWindow.isShowing}
+                ------
+                """.trimIndent()
+            )
             progressWindow.addStateDelegate(ProgressWindowDelegate())
-            progressCounterUpdated(progressCounter.incrementAndGet())
+            SwingUtilities.invokeLater {
+                progressCounterUpdated(progressCounter.incrementAndGet())
+            }
         })
     }
 
@@ -60,19 +77,22 @@ class NyanTrayApplicationComponent : ApplicationComponent {
         override fun wasStarted() = false
         override fun processFinish() = Unit
         override fun finish(task: TaskInfo) {
-            progressCounterUpdated(progressCounter.decrementAndGet())
+            SwingUtilities.invokeLater {
+                log("finish ${task.title}")
+                progressCounterUpdated(progressCounter.decrementAndGet())
+            }
         }
     }
 
     private fun progressCounterUpdated(progressCounterValue: Int) {
         log("progressCounterValue=$progressCounterValue")
-        if (progressCounterValue == 0) {
-            SwingUtilities.invokeLater {
+        when (progressCounterValue) {
+            0 -> {
                 log("hideIcon")
                 Tray.hideIcon()
             }
-        } else {
-            SwingUtilities.invokeLater {
+
+            1 -> {
                 log("showIcon")
                 Tray.showIcon()
             }

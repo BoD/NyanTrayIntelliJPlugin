@@ -20,6 +20,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <b>1.0.3</b><br/>
+        Added even more logs to investigate the tray icon sometimes not disappearing<br/>
+        <br/>
+
         <b>1.0.2</b><br/>
         Added logs to investigate the tray icon sometimes not disappearing<br/>
         <br/>
