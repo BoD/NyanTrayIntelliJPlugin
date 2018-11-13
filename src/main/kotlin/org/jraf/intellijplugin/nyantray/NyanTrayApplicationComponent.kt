@@ -48,30 +48,17 @@ class NyanTrayApplicationComponent : ApplicationComponent {
     override fun initComponent() {
         val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
         messageBusConnection.subscribe(ProgressWindow.TOPIC, ProgressWindow.Listener { progressWindow ->
-            log(
-                """
-                ------
-                title: ${progressWindow.title}
-                text: ${progressWindow.text}
-                text2: ${progressWindow.text2}
-                userDataString: ${progressWindow.userDataString}
-                isCanceled: ${progressWindow.isCanceled}
-                isIndeterminate: ${progressWindow.isIndeterminate}
-                isModal: ${progressWindow.isModal}
-                isPopupWasShown: ${progressWindow.isPopupWasShown}
-                isRunning: ${progressWindow.isRunning}
-                isShowing: ${progressWindow.isShowing}
-                ------
-                """.trimIndent()
-            )
-            progressWindow.addStateDelegate(ProgressWindowDelegate())
             SwingUtilities.invokeLater {
-                progressCounterUpdated(progressCounter.incrementAndGet())
+                progressWindow.log()
+                if (progressWindow.isRunning) {
+                    progressWindow.addStateDelegate(ProgressWindowDelegate(progressWindow))
+                    progressCounterUpdated(progressCounter.incrementAndGet())
+                }
             }
         })
     }
 
-    private inner class ProgressWindowDelegate : AbstractProgressIndicatorBase(), ProgressIndicatorEx {
+    private inner class ProgressWindowDelegate(private val progressWindow: ProgressWindow) : AbstractProgressIndicatorBase(), ProgressIndicatorEx {
         override fun addStateDelegate(delegate: ProgressIndicatorEx) = Unit
         override fun isFinished(task: TaskInfo) = true
         override fun wasStarted() = false
@@ -79,6 +66,7 @@ class NyanTrayApplicationComponent : ApplicationComponent {
         override fun finish(task: TaskInfo) {
             SwingUtilities.invokeLater {
                 log("finish ${task.title}")
+                progressWindow.log()
                 progressCounterUpdated(progressCounter.decrementAndGet())
             }
         }
@@ -99,8 +87,28 @@ class NyanTrayApplicationComponent : ApplicationComponent {
         }
     }
 
+    private fun ProgressWindow.log() {
+        log(
+            """
+            ------
+            title: $title
+            text: $text
+            text2: $text2
+            userDataString: $userDataString
+            isCanceled: $isCanceled
+            isIndeterminate: $isIndeterminate
+            isModal: $isModal
+            isPopupWasShown: $isPopupWasShown
+            isRunning: $isRunning
+            isShowing: $isShowing
+            ------
+            """.trimIndent()
+        )
+    }
+
     private fun log(s: String) {
         LOGGER.info(s)
         println(s)
     }
+
 }

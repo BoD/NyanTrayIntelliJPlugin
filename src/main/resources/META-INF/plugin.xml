@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>org.jraf.intellijplugin.nyantray</id>
     <name>Nyan Tray</name>
-    <version>1.0.0</version>
+    <version>1.0.4</version>
     <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
 
     <description><![CDATA[
@@ -20,6 +20,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <b>1.0.4</b><br/>
+        Fixed a bug where the tray icon would sometimes not disappear<br/>
+        <br/>
+
         <b>1.0.3</b><br/>
         Added even more logs to investigate the tray icon sometimes not disappearing<br/>
         <br/>
