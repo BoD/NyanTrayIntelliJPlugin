@@ -31,15 +31,16 @@ import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
 import java.awt.TrayIcon
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.swing.SwingUtilities
 
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
 object Tray {
-    private const val INFO = "BoD NyanTray v1.0.4 - https://JRAF.org"
+    private const val INFO = "BoD NyanTray v1.0.5 - https://JRAF.org"
     private const val ANIMATION_DELAY_MS = 128L
     private var animationJob: Job? = null
 
-    @Volatile
-    private var showing = false
+    private val showing = AtomicBoolean(false)
 
     private val trayIcon: TrayIcon by lazy {
         TrayIcon(
@@ -57,19 +58,23 @@ object Tray {
     }
 
     fun showIcon() {
+        if (showing.get()) return
         if (!SystemTray.isSupported()) return
-        if (showing) return
-        showing = true
-        SystemTray.getSystemTray().add(trayIcon)
-        animationJob = launch { startTrayIconAnimation() }
+        showing.set(true)
+        SwingUtilities.invokeLater {
+            SystemTray.getSystemTray().add(trayIcon)
+            animationJob = launch { startTrayIconAnimation() }
+        }
     }
 
     fun hideIcon() {
+        if (!showing.get()) return
         if (!SystemTray.isSupported()) return
-        if (!showing) return
-        showing = false
+        showing.set(false)
         animationJob?.cancel()
-        SystemTray.getSystemTray().remove(trayIcon)
+        SwingUtilities.invokeLater {
+            SystemTray.getSystemTray().remove(trayIcon)
+        }
     }
 
     private suspend fun startTrayIconAnimation() {

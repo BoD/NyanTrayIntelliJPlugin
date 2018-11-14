@@ -27,88 +27,66 @@ package org.jraf.intellijplugin.nyantray
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ApplicationComponent
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.TaskInfo
-import com.intellij.openapi.progress.util.AbstractProgressIndicatorBase
 import com.intellij.openapi.progress.util.ProgressWindow
-import com.intellij.openapi.wm.ex.ProgressIndicatorEx
-import java.util.concurrent.atomic.AtomicInteger
-import javax.swing.SwingUtilities
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 
 class NyanTrayApplicationComponent : ApplicationComponent {
     companion object {
         private const val COMPONENT_NAME = "NyanTray"
 
         private val LOGGER = Logger.getInstance(NyanTrayApplicationComponent::class.java)
+
+        private const val LOOP_DELAY_MS = 1500L
     }
 
-    private val progressCounter = AtomicInteger(0)
+    private val progressWindows = mutableSetOf<ProgressWindow>()
+    private var loopJob: Job? = null
 
     override fun getComponentName() = COMPONENT_NAME
 
     override fun initComponent() {
         val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
         messageBusConnection.subscribe(ProgressWindow.TOPIC, ProgressWindow.Listener { progressWindow ->
-            SwingUtilities.invokeLater {
-                progressWindow.log()
-                if (progressWindow.isRunning) {
-                    progressWindow.addStateDelegate(ProgressWindowDelegate(progressWindow))
-                    progressCounterUpdated(progressCounter.incrementAndGet())
-                }
+            synchronized(progressWindows) {
+                progressWindows += progressWindow
             }
         })
-    }
 
-    private inner class ProgressWindowDelegate(private val progressWindow: ProgressWindow) : AbstractProgressIndicatorBase(), ProgressIndicatorEx {
-        override fun addStateDelegate(delegate: ProgressIndicatorEx) = Unit
-        override fun isFinished(task: TaskInfo) = true
-        override fun wasStarted() = false
-        override fun processFinish() = Unit
-        override fun finish(task: TaskInfo) {
-            SwingUtilities.invokeLater {
-                log("finish ${task.title}")
-                progressWindow.log()
-                progressCounterUpdated(progressCounter.decrementAndGet())
-            }
+        loopJob = launch {
+            loop()
         }
     }
 
-    private fun progressCounterUpdated(progressCounterValue: Int) {
-        log("progressCounterValue=$progressCounterValue")
-        when (progressCounterValue) {
-            0 -> {
-                log("hideIcon")
-                Tray.hideIcon()
-            }
-
-            1 -> {
-                log("showIcon")
-                Tray.showIcon()
-            }
-        }
+    override fun disposeComponent() {
+        loopJob?.cancel()
     }
 
-    private fun ProgressWindow.log() {
-        log(
-            """
-            ------
-            title: $title
-            text: $text
-            text2: $text2
-            userDataString: $userDataString
-            isCanceled: $isCanceled
-            isIndeterminate: $isIndeterminate
-            isModal: $isModal
-            isPopupWasShown: $isPopupWasShown
-            isRunning: $isRunning
-            isShowing: $isShowing
-            ------
-            """.trimIndent()
-        )
+    private suspend fun loop() {
+        while (true) {
+            synchronized(progressWindows) {
+                val i = progressWindows.iterator()
+                while (i.hasNext()) {
+                    val progressWindow = i.next()
+                    if (!progressWindow.isRunning) {
+                        i.remove()
+                    }
+                }
+
+                if (progressWindows.isEmpty()) {
+                    Tray.hideIcon()
+                } else {
+                    Tray.showIcon()
+                }
+            }
+
+            delay(LOOP_DELAY_MS)
+        }
     }
 
     private fun log(s: String) {
         LOGGER.info(s)
         println(s)
     }
-
 }
