@@ -10,6 +10,8 @@ It shows a Nyan Cat **in your macOS menu bar** whenever something is "ongoing" (
 
 This will help you switch to another window temporarily while knowing at a glance when the task is finished.
 
+When clicking on it, the total waiting time (today, this week, this month, this year, overall) is shown.
+
 **Note: this has only been tested on macOS.** This uses the Swing <code>SystemTray</code> API so it may work on other OSes.
 
       
@@ -20,6 +22,9 @@ To optimize your work/nonwork task switching ;)
 A lot of people switch to their browser/slack/minesweeper/whatever window while the project
 is compiling. Having a system-wide "ongoing progress" indicator allows to 
 know right away when it's time to go back to work, even from another window or space.
+
+Also, knowing how much time you spend doing nothing waiting for your IDE may 
+be useful when asking your boss for a more powerful machine ;)
 
 That's it!
 
@@ -33,8 +38,14 @@ Install / Download
 
 See also
 ----
-
 If you like this plugin, you'll probably also like [this one](https://github.com/batya239/NyanProgressBar) ;)
+
+There's also [this gradle plugin](https://github.com/passy/build-time-tracker-plugin) to count time spent waiting for gradle.
+
+
+Misc
+----
+The time counting data is stored in `~/.nyantray`.
 
 
 Licence

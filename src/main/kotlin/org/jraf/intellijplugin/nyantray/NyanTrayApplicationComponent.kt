@@ -43,6 +43,7 @@ class NyanTrayApplicationComponent : ApplicationComponent {
 
     private val progressWindows = mutableSetOf<ProgressWindow>()
     private var loopJob: Job? = null
+    private var progressOngoing: Boolean = false
 
     override fun getComponentName() = COMPONENT_NAME
 
@@ -75,13 +76,29 @@ class NyanTrayApplicationComponent : ApplicationComponent {
                 }
 
                 if (progressWindows.isEmpty()) {
-                    Tray.hideIcon()
+                    if (progressOngoing) {
+                        progressOngoing = false
+                        onProgressOngoing(false)
+                    }
                 } else {
-                    Tray.showIcon()
+                    if (!progressOngoing) {
+                        progressOngoing = true
+                        onProgressOngoing(true)
+                    }
                 }
             }
 
             delay(LOOP_DELAY_MS)
+        }
+    }
+
+    private fun onProgressOngoing(progressOngoing: Boolean) {
+        if (progressOngoing) {
+            TimeCount.startCountingTime()
+            Tray.showIcon()
+        } else {
+            TimeCount.stopCountingTime()
+            Tray.hideIcon()
         }
     }
 

@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>org.jraf.intellijplugin.nyantray</id>
     <name>Nyan Tray</name>
-    <version>1.0.5</version>
+    <version>1.1.0</version>
     <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
 
     <description><![CDATA[
@@ -20,6 +20,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <b>1.1.0</b><br/>
+        Add time counting features<br/>
+        <br/>
+
         <b>1.0.5</b><br/>
         Fixed a bug where the tray icon would sometimes not disappear - again<br/>
         <br/>
