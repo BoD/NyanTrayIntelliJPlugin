@@ -43,7 +43,7 @@ object Tray {
     private const val MENU_ITEM_MONTH = "This month: %s"
     private const val MENU_ITEM_WEEK = "This week: %s"
     private const val MENU_ITEM_DAY = "Today: %s"
-    private const val MENU_ITEM_ABOUT = "BoD NyanTray v1.1.0 - https://JRAF.org"
+    private const val MENU_ITEM_ABOUT = "BoD NyanTray v1.1.1 - https://JRAF.org"
 
     private const val ANIMATION_DELAY_MS = 128L
     private var animationJob: Job? = null

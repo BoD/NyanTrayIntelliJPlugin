@@ -159,6 +159,7 @@ object TimeCount {
     }
 
     private fun loadState() {
+        if (!persistedStateFile.exists()) return
         val persistedState = gson.fromJson<PersistedState>(persistedStateFile.readText(), PersistedState::class.java)
         firstUse = persistedState.firstUse
         dayOfYear = persistedState.dayOfYear
