@@ -30,7 +30,7 @@ import kotlinx.coroutines.experimental.launch
 import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDate
 import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDuration
 import org.jraf.intellijplugin.nyantray.images.Images
-import org.jraf.intellijplugin.nyantray.images.small
+import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.concurrent.atomic.AtomicBoolean
@@ -104,11 +104,12 @@ object NyanWindow {
     }
 
     private val label by lazy {
-        JLabel(ImageIcon(Images.nyan[0].small))
+        JLabel(ImageIcon(Images.nyanSmall[0]))
     }
 
     private val frame: AutoFrame by lazy {
         AutoFrame("", this::class.java).apply {
+            background = Color(0, 0, 0, 0)
             contentPane.add(label)
             addMouseListener(object : MouseAdapter() {
                 override fun mouseClicked(e: MouseEvent) {
@@ -150,8 +151,8 @@ object NyanWindow {
 
     private suspend fun startTrayIconAnimation() {
         while (true) {
-            for (i in Images.nyan) {
-                label.icon = ImageIcon(i.small)
+            for (i in Images.nyanSmall) {
+                label.icon = ImageIcon(i)
                 delay(ANIMATION_DELAY_MS)
             }
         }

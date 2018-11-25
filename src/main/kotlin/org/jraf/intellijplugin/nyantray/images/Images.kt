@@ -28,7 +28,10 @@ import java.awt.Image
 import java.awt.Toolkit
 
 object Images {
-    val nyan: Array<Image> by lazy {
+    private const val WIDTH_SMALL = 68
+    private const val HEIGHT_SMALL = 21
+
+    val nyanOriginal: Array<Image> by lazy {
         arrayOf(
             getImage("nyan00.png"),
             getImage("nyan01.png"),
@@ -45,7 +48,25 @@ object Images {
         )
     }
 
-    private fun getImage(imageName: String) = Toolkit.getDefaultToolkit().getImage(Images::class.java.getResource(imageName))
-}
+    val nyanSmall: Array<Image> by lazy {
+        arrayOf(
+            getImage("nyan00.png").small,
+            getImage("nyan01.png").small,
+            getImage("nyan02.png").small,
+            getImage("nyan03.png").small,
+            getImage("nyan04.png").small,
+            getImage("nyan05.png").small,
+            getImage("nyan06.png").small,
+            getImage("nyan07.png").small,
+            getImage("nyan08.png").small,
+            getImage("nyan09.png").small,
+            getImage("nyan10.png").small,
+            getImage("nyan11.png").small
+        )
+    }
 
-val Image.small: Image get() = getScaledInstance(68, 21, Image.SCALE_DEFAULT)
+
+    private fun getImage(imageName: String) = Toolkit.getDefaultToolkit().getImage(Images::class.java.getResource(imageName))
+
+    private val Image.small: Image get() = getScaledInstance(WIDTH_SMALL, HEIGHT_SMALL, Image.SCALE_DEFAULT)
+}

@@ -83,7 +83,7 @@ object Tray {
 
     private val trayIcon: TrayIcon by lazy {
         TrayIcon(
-            Images.nyan[0],
+            Images.nyanOriginal[0],
             MENU_ITEM_ABOUT,
             PopupMenu().apply {
                 add(overallMenuItem)
@@ -133,7 +133,7 @@ object Tray {
 
     private suspend fun startTrayIconAnimation() {
         while (true) {
-            for (i in Images.nyan) {
+            for (i in Images.nyanOriginal) {
                 trayIcon.image = i
                 delay(ANIMATION_DELAY_MS)
             }
