@@ -11,6 +11,7 @@ plugins {
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'kotlin'
 
 intellij {
     version 'IC-2018.1'
@@ -30,6 +31,7 @@ repositories {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     //implementation 'com.beust:klaxon:3.0.1'
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -37,10 +39,12 @@ dependencies {
 
 compileKotlin {
     kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.apiVersion = '1.2'
 }
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.apiVersion = '1.2'
 }
 
 kotlin {

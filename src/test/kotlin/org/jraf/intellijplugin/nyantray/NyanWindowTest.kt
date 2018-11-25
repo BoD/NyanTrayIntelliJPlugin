@@ -22,33 +22,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jraf.intellijplugin.nyantray
 
-import java.awt.Image
-import java.awt.Toolkit
+import org.junit.Test
 
-object Images {
-    val nyan: Array<Image> by lazy {
-        arrayOf(
-            getImage("nyan00.png"),
-            getImage("nyan01.png"),
-            getImage("nyan02.png"),
-            getImage("nyan03.png"),
-            getImage("nyan04.png"),
-            getImage("nyan05.png"),
-            getImage("nyan06.png"),
-            getImage("nyan07.png"),
-            getImage("nyan08.png"),
-            getImage("nyan09.png"),
-            getImage("nyan10.png"),
-            getImage("nyan11.png")
-        )
-    }
 
-    private fun getImage(imageName: String): Image {
-        val javaClass = Images::class.java
-        val resourcesPath = javaClass.`package`.name.replace('.', '/')
-        val imagesPath = "$resourcesPath/images"
-        return Toolkit.getDefaultToolkit().getImage(javaClass.classLoader.getResource("$imagesPath/$imageName"))
+class NyanWindowTest {
+    @Test
+    fun `test window`() {
+        NyanWindow.showWindow()
+        Thread.sleep(10000)
+        NyanWindow.hideWindow()
+        Thread.sleep(1000)
+        NyanWindow.showWindow()
+        Thread.sleep(10000)
     }
 }

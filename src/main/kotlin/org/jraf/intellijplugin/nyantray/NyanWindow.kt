@@ -30,15 +30,20 @@ import kotlinx.coroutines.experimental.launch
 import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDate
 import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDuration
 import org.jraf.intellijplugin.nyantray.images.Images
-import java.awt.MenuItem
-import java.awt.PopupMenu
-import java.awt.SystemTray
-import java.awt.TrayIcon
+import org.jraf.intellijplugin.nyantray.images.small
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.swing.ImageIcon
+import javax.swing.JLabel
+import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
+import javax.swing.JSeparator
 import javax.swing.SwingUtilities
 
+
 @Suppress("EXPERIMENTAL_FEATURE_WARNING")
-object Tray {
+object NyanWindow {
     private const val MENU_ITEM_OVERALL = "Since %s: %s"
     private const val MENU_ITEM_YEAR = "This year: %s"
     private const val MENU_ITEM_MONTH = "This month: %s"
@@ -52,89 +57,101 @@ object Tray {
     private val showing = AtomicBoolean(false)
 
     private val overallMenuItem by lazy {
-        MenuItem(getFormattedTimeCountOverall()).apply {
+        JMenuItem(getFormattedTimeCountOverall()).apply {
             isEnabled = false
         }
     }
 
     private val yearMenuItem by lazy {
-        MenuItem(getFormattedTimeCountYear()).apply {
+        JMenuItem(getFormattedTimeCountYear()).apply {
             isEnabled = false
         }
     }
 
     private val monthMenuItem by lazy {
-        MenuItem(getFormattedTimeCountMonth()).apply {
+        JMenuItem(getFormattedTimeCountMonth()).apply {
             isEnabled = false
         }
     }
 
     private val weekMenuItem by lazy {
-        MenuItem(getFormattedTimeCountWeek()).apply {
+        JMenuItem(getFormattedTimeCountWeek()).apply {
             isEnabled = false
         }
     }
 
     private val dayMenuItem by lazy {
-        MenuItem(getFormattedTimeCountDay()).apply {
+        JMenuItem(getFormattedTimeCountDay()).apply {
             isEnabled = false
         }
     }
 
-    private val trayIcon: TrayIcon by lazy {
-        TrayIcon(
-            Images.nyan[0],
-            MENU_ITEM_ABOUT,
-            PopupMenu().apply {
-                add(overallMenuItem)
-                add(yearMenuItem)
-                add(monthMenuItem)
-                add(weekMenuItem)
-                add(dayMenuItem)
-                add(MenuItem("-"))
-                add(
-                    MenuItem(MENU_ITEM_ABOUT).apply {
-                        isEnabled = false
-                        addActionListener { }
-                    }
-                )
-            }
-        )
+    private val popupMenu by lazy {
+        JPopupMenu().apply {
+            add(overallMenuItem)
+            add(yearMenuItem)
+            add(monthMenuItem)
+            add(weekMenuItem)
+            add(dayMenuItem)
+            add(JSeparator())
+            add(
+                JMenuItem(MENU_ITEM_ABOUT).apply {
+                    isEnabled = false
+                    addActionListener { }
+                }
+            )
+        }
     }
 
-    fun showIcon() {
+    private val label by lazy {
+        JLabel(ImageIcon(Images.nyan[0].small))
+    }
+
+    private val frame: AutoFrame by lazy {
+        AutoFrame("", this::class.java).apply {
+            contentPane.add(label)
+            addMouseListener(object : MouseAdapter() {
+                override fun mouseClicked(e: MouseEvent) {
+                    if (e.button == MouseEvent.BUTTON3) {
+                        popupMenu.show(this@apply, e.x, e.y)
+                    }
+                }
+            })
+            pack()
+        }
+    }
+
+    fun showWindow() {
         if (showing.get()) return
-        if (!SystemTray.isSupported()) return
         showing.set(true)
         SwingUtilities.invokeLater {
             updateMenuItems()
-            SystemTray.getSystemTray().add(trayIcon)
+            frame.isVisible = true
             animationJob = launch { startTrayIconAnimation() }
         }
     }
 
-    fun hideIcon() {
+    fun hideWindow() {
         if (!showing.get()) return
-        if (!SystemTray.isSupported()) return
         showing.set(false)
         animationJob?.cancel()
         SwingUtilities.invokeLater {
-            SystemTray.getSystemTray().remove(trayIcon)
+            frame.isVisible = false
         }
     }
 
     private fun updateMenuItems() {
-        overallMenuItem.label = getFormattedTimeCountOverall()
-        yearMenuItem.label = getFormattedTimeCountYear()
-        monthMenuItem.label = getFormattedTimeCountMonth()
-        weekMenuItem.label = getFormattedTimeCountWeek()
-        dayMenuItem.label = getFormattedTimeCountDay()
+        overallMenuItem.text = getFormattedTimeCountOverall()
+        yearMenuItem.text = getFormattedTimeCountYear()
+        monthMenuItem.text = getFormattedTimeCountMonth()
+        weekMenuItem.text = getFormattedTimeCountWeek()
+        dayMenuItem.text = getFormattedTimeCountDay()
     }
 
     private suspend fun startTrayIconAnimation() {
         while (true) {
             for (i in Images.nyan) {
-                trayIcon.image = i
+                label.icon = ImageIcon(i.small)
                 delay(ANIMATION_DELAY_MS)
             }
         }
