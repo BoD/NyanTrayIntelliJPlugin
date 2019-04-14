@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>org.jraf.intellijplugin.nyantray</id>
     <name>Nyan Tray</name>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
 
     <description><![CDATA[
@@ -20,6 +20,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <b>1.1.2 - 2019-04-14</b><br/>
+        Update to the latest version of the IJ plugin platform, as well as Kotlin<br/>
+        <br/>
+
         <b>1.1.1</b><br/>
         Fix a bug that could happen when loading the time counting file<br/>
         <br/>
