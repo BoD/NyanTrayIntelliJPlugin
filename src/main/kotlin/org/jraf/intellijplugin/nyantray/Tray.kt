@@ -7,7 +7,7 @@
  *                              /___/
  * repository.
  *
- * Copyright (C) 2018 Benoit 'BoD' Lubek (BoD@JRAF.org)
+ * Copyright (C) 2018-present Benoit 'BoD' Lubek (BoD@JRAF.org)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,10 @@
  */
 package org.jraf.intellijplugin.nyantray
 
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDate
 import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDuration
 import java.awt.MenuItem
@@ -105,7 +106,7 @@ object Tray {
         SwingUtilities.invokeLater {
             updateMenuItems()
             SystemTray.getSystemTray().add(trayIcon)
-            animationJob = launch { startTrayIconAnimation() }
+            animationJob = GlobalScope.launch { startTrayIconAnimation() }
         }
     }
 
