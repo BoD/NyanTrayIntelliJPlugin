@@ -7,7 +7,7 @@
  *                              /___/
  * repository.
  *
- * Copyright (C) 2018-present Benoit 'BoD' Lubek (BoD@JRAF.org)
+ * Copyright (C) 2020 Benoit 'BoD' Lubek (BoD@JRAF.org)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.jraf.intellijplugin.nyantray
+package org.jraf.intellijplugin.nyantray.plugin
 
 import com.google.gson.Gson
-import org.apache.commons.lang3.time.DurationFormatUtils
+import org.jraf.intellijplugin.nyantray.util.Millisecond
+import org.jraf.intellijplugin.nyantray.util.Timestamp
 import java.io.File
-import java.text.DateFormat
 import java.util.Calendar
-import java.util.Date
-
-
-typealias Millisecond = Long
-typealias Timestamp = Long
 
 object TimeCount {
     private data class PersistedState(
@@ -71,7 +65,7 @@ object TimeCount {
         resetTimeCountIfNeeded()
     }
 
-    fun addCountedTime(countedTime: Millisecond) {
+    private fun addCountedTime(countedTime: Millisecond) {
         resetTimeCountIfNeeded()
 
         countedTimeDay += countedTime
@@ -126,19 +120,6 @@ object TimeCount {
     private fun getMonth() = Calendar.getInstance()[Calendar.MONTH]
     private fun getYear() = Calendar.getInstance()[Calendar.YEAR]
 
-    fun Millisecond.asFormattedDuration() = DurationFormatUtils.formatDuration(this, "d'd'H'h'm'm'")
-        .replace("d0h", "d")
-        .replace("d0m", "d")
-        .replace("h0m", "h")
-        .replace(Regex("^0d(.+)"), "$1")
-        .replace(Regex("^0h(.+)"), "$1")
-        .replace(Regex("^0d$"), "0m")
-
-    fun Timestamp.asFormattedDate(): String {
-        val df = DateFormat.getDateInstance(DateFormat.SHORT)
-        return df.format(Date(this))
-    }
-
     private fun persistState() {
         persistedStateFile.writeText(
             gson.toJson(
@@ -160,7 +141,7 @@ object TimeCount {
 
     private fun loadState() {
         if (!persistedStateFile.exists()) return
-        val persistedState = gson.fromJson<PersistedState>(persistedStateFile.readText(), PersistedState::class.java)
+        val persistedState = gson.fromJson(persistedStateFile.readText(), PersistedState::class.java)
         firstUse = persistedState.firstUse
         dayOfYear = persistedState.dayOfYear
         weekOfYear = persistedState.weekOfYear

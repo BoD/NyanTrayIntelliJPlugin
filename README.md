@@ -1,5 +1,4 @@
-Nyan Tray IntelliJ Plugin
-====
+# Nyan Tray IntelliJ Plugin
 
 A little plugin for IntelliJ (and Android Studio, and other IntelliJ based IDEs)
 to let you know when work is ongoing.
@@ -15,8 +14,7 @@ When clicking on it, the total waiting time (today, this week, this month, this 
 **Note: this has only been tested on macOS.** This uses the Swing <code>SystemTray</code> API so it may work on other OSes.
 
       
-Why?
-----
+## Why?
 To optimize your work/nonwork task switching ;)
 
 A lot of people switch to their browser/slack/minesweeper/whatever window while the project
@@ -29,27 +27,23 @@ be useful when asking your boss for a more powerful machine ;)
 That's it!
 
 
-Install / Download
-----
+## Install / Download
 - Install it directly inside your IDE from the *Plugins* preferences (click on *Browse repositories...* and search for *Nyan Tray*).
 - Or get the zip and install it manually (click on *Install plugin from disk...*): https://github.com/BoD/NyanTrayIntelliJPlugin/releases/latest
 - The plugin page is here: https://plugins.jetbrains.com/plugin/11286-nyan-tray
 
 
-See also
-----
+## See also
 If you like this plugin, you'll probably also like [this one](https://github.com/batya239/NyanProgressBar) ;)
 
 There's also [this gradle plugin](https://github.com/passy/build-time-tracker-plugin) to count time spent waiting for gradle.
 
 
-Misc
-----
+## Misc
 The time counting data is stored in `~/.nyantray`.
 
 
-Licence
-----
+## Licence
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

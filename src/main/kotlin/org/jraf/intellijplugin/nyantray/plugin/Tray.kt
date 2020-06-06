@@ -7,7 +7,7 @@
  *                              /___/
  * repository.
  *
- * Copyright (C) 2018-present Benoit 'BoD' Lubek (BoD@JRAF.org)
+ * Copyright (C) 2020 Benoit 'BoD' Lubek (BoD@JRAF.org)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.jraf.intellijplugin.nyantray
+package org.jraf.intellijplugin.nyantray.plugin
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDate
-import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDuration
+import org.jraf.intellijplugin.nyantray.VERSION
+import org.jraf.intellijplugin.nyantray.images.Images
+import org.jraf.intellijplugin.nyantray.util.asFormattedDate
+import org.jraf.intellijplugin.nyantray.util.asFormattedDuration
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
@@ -37,14 +39,14 @@ import java.awt.TrayIcon
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.SwingUtilities
 
-@Suppress("EXPERIMENTAL_FEATURE_WARNING")
 object Tray {
     private const val MENU_ITEM_OVERALL = "Since %s: %s"
     private const val MENU_ITEM_YEAR = "This year: %s"
     private const val MENU_ITEM_MONTH = "This month: %s"
     private const val MENU_ITEM_WEEK = "This week: %s"
     private const val MENU_ITEM_DAY = "Today: %s"
-    private const val MENU_ITEM_ABOUT = "BoD NyanTray v1.1.2 - https://JRAF.org"
+    private const val MENU_ITEM_INFO = "(1d = 1 work day = 8 hours)"
+    private const val MENU_ITEM_ABOUT = "BoD NyanTray $VERSION - https://JRAF.org"
 
     private const val ANIMATION_DELAY_MS = 128L
     private var animationJob: Job? = null
@@ -90,9 +92,13 @@ object Tray {
                 add(dayMenuItem)
                 add(MenuItem("-"))
                 add(
+                    MenuItem(MENU_ITEM_INFO).apply {
+                        isEnabled = false
+                    }
+                )
+                add(
                     MenuItem(MENU_ITEM_ABOUT).apply {
                         isEnabled = false
-                        addActionListener { }
                     }
                 )
             }

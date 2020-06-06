@@ -25,17 +25,16 @@
 
 package org.jraf.intellijplugin.nyantray
 
-import org.jraf.intellijplugin.nyantray.TimeCount.asFormattedDuration
+import org.jraf.intellijplugin.nyantray.util.asFormattedDuration
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
-
 class MillisecondTest {
     @Test
     fun `test format duration`() {
-        assertEquals("0m", 0L.asFormattedDuration())
-        assertEquals("0m", TimeUnit.SECONDS.toMillis(30).asFormattedDuration())
+        assertEquals("0s", 0L.asFormattedDuration())
+        assertEquals("30s", TimeUnit.SECONDS.toMillis(30).asFormattedDuration())
         assertEquals("1m", TimeUnit.MINUTES.toMillis(1).asFormattedDuration())
         assertEquals("2m", TimeUnit.MINUTES.toMillis(2).asFormattedDuration())
         assertEquals("1h", TimeUnit.HOURS.toMillis(1).asFormattedDuration())
@@ -44,17 +43,23 @@ class MillisecondTest {
                     TimeUnit.MINUTES.toMillis(30)).asFormattedDuration()
         )
         assertEquals("2h", TimeUnit.HOURS.toMillis(2).asFormattedDuration())
-        assertEquals("1d", TimeUnit.DAYS.toMillis(1).asFormattedDuration())
+        assertEquals("7h", TimeUnit.HOURS.toMillis(7).asFormattedDuration())
         assertEquals(
-            "1d30m", (TimeUnit.DAYS.toMillis(1) +
-                    TimeUnit.MINUTES.toMillis(30)).asFormattedDuration()
+            "7h59m", (TimeUnit.HOURS.toMillis(7) +
+                    TimeUnit.MINUTES.toMillis(59)).asFormattedDuration()
         )
+
+        assertEquals("1d", TimeUnit.HOURS.toMillis(8).asFormattedDuration())
+        assertEquals("1d1h", TimeUnit.HOURS.toMillis(9).asFormattedDuration())
+        assertEquals("1d7h", TimeUnit.HOURS.toMillis(15).asFormattedDuration())
+        assertEquals("2d", TimeUnit.HOURS.toMillis(16).asFormattedDuration())
+
+        assertEquals("3d", TimeUnit.DAYS.toMillis(1).asFormattedDuration())
+
+        assertEquals("1d30m", (TimeUnit.HOURS.toMillis(8) + TimeUnit.MINUTES.toMillis(30)).asFormattedDuration())
+
         assertEquals(
-            "1d5h", (TimeUnit.DAYS.toMillis(1) +
-                    TimeUnit.HOURS.toMillis(5)).asFormattedDuration()
-        )
-        assertEquals(
-            "1d5h30m", (TimeUnit.DAYS.toMillis(1) +
+            "3d5h30m", (TimeUnit.DAYS.toMillis(1) +
                     TimeUnit.HOURS.toMillis(5) +
                     TimeUnit.MINUTES.toMillis(30)).asFormattedDuration()
         )
