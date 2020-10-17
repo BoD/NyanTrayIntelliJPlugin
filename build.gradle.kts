@@ -5,9 +5,9 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.72"
-    id("org.jetbrains.intellij") version "0.4.21"
-    id("com.github.ben-manes.versions") version "0.28.0"
+    kotlin("jvm") version "1.4.10"
+    id("org.jetbrains.intellij") version "0.5.0"
+    id("com.github.ben-manes.versions") version "0.33.0"
 }
 
 apply(plugin = "idea")
@@ -33,7 +33,7 @@ dependencies {
 tasks {
     wrapper {
         distributionType = Wrapper.DistributionType.ALL
-        gradleVersion = "6.5"
+        gradleVersion = "6.7"
     }
 
     patchPluginXml {
