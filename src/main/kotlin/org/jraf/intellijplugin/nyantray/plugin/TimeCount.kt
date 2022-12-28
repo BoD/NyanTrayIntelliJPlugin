@@ -24,26 +24,11 @@
  */
 package org.jraf.intellijplugin.nyantray.plugin
 
-import com.google.gson.Gson
 import org.jraf.intellijplugin.nyantray.util.Millisecond
 import org.jraf.intellijplugin.nyantray.util.Timestamp
-import java.io.File
 import java.util.Calendar
 
 object TimeCount {
-    private data class PersistedState(
-        val firstUse: Timestamp,
-        val dayOfYear: Int,
-        val weekOfYear: Int,
-        val month: Int,
-        val year: Int,
-        val countedTimeDay: Millisecond,
-        val countedTimeWeek: Millisecond,
-        val countedTimeMonth: Millisecond,
-        val countedTimeYear: Millisecond,
-        val countedTimeOverall: Millisecond
-    )
-
     var firstUse: Timestamp = System.currentTimeMillis()
     private var countingStartTime: Timestamp? = null
     private var dayOfYear: Int = getDayOfYear()
@@ -56,9 +41,6 @@ object TimeCount {
     var countedTimeMonth: Millisecond = 0
     var countedTimeYear: Millisecond = 0
     var countedTimeOverall: Millisecond = 0
-
-    private val persistedStateFile by lazy { File(System.getProperty("user.home"), ".nyantray") }
-    private val gson by lazy { Gson() }
 
     init {
         loadState()
@@ -121,27 +103,22 @@ object TimeCount {
     private fun getYear() = Calendar.getInstance()[Calendar.YEAR]
 
     private fun persistState() {
-        persistedStateFile.writeText(
-            gson.toJson(
-                PersistedState(
-                    firstUse = firstUse,
-                    dayOfYear = dayOfYear,
-                    weekOfYear = weekOfYear,
-                    month = month,
-                    year = year,
-                    countedTimeDay = countedTimeDay,
-                    countedTimeWeek = countedTimeWeek,
-                    countedTimeMonth = countedTimeMonth,
-                    countedTimeYear = countedTimeYear,
-                    countedTimeOverall = countedTimeOverall
-                )
-            )
+        PersistedState.persistState(
+            firstUse = firstUse,
+            dayOfYear = dayOfYear,
+            weekOfYear = weekOfYear,
+            month = month,
+            year = year,
+            countedTimeDay = countedTimeDay,
+            countedTimeWeek = countedTimeWeek,
+            countedTimeMonth = countedTimeMonth,
+            countedTimeYear = countedTimeYear,
+            countedTimeOverall = countedTimeOverall
         )
     }
 
     private fun loadState() {
-        if (!persistedStateFile.exists()) return
-        val persistedState = gson.fromJson(persistedStateFile.readText(), PersistedState::class.java)
+        val persistedState = PersistedState.loadState() ?: return
         firstUse = persistedState.firstUse
         dayOfYear = persistedState.dayOfYear
         weekOfYear = persistedState.weekOfYear

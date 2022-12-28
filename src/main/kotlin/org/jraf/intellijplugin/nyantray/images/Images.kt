@@ -45,6 +45,8 @@ object Images {
         )
     }
 
+    val idle by lazy { getImage("idle.png") }
+
     private fun getImage(imageName: String): Image {
         val javaClass = Images::class.java
         val resourcesPath = javaClass.`package`.name.replace('.', '/')

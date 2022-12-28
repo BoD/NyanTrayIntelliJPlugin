@@ -1,43 +1,31 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
-    kotlin("jvm") version "1.4.10"
-    id("org.jetbrains.intellij") version "0.5.0"
-    id("com.github.ben-manes.versions") version "0.33.0"
+    kotlin("jvm")
+    id("org.jetbrains.intellij")
 }
-
-apply(plugin = "idea")
-apply(plugin = "org.jetbrains.intellij")
 
 intellij {
-    version = "IC-2019.1"
-    pluginName = "nyantray"
+    pluginName.set("nyantray")
+    version.set("212.5712.43")
+    type.set("IC")
 }
 
 group = "org.jraf"
-version = "1.2.0"
+version = "1.3.0"
 
 repositories {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("com.google.code.gson:gson:_")
+    implementation(Kotlin.stdlib.jdk8)
+    implementation(KotlinX.coroutines.core)
 }
 
 tasks {
-    wrapper {
-        distributionType = Wrapper.DistributionType.ALL
-        gradleVersion = "6.7"
-    }
-
     patchPluginXml {
-        untilBuild(null)
+        sinceBuild.set("212")
+        untilBuild.set("223.*")
     }
 
     compileKotlin {

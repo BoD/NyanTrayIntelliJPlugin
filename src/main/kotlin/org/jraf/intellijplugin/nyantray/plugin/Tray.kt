@@ -32,10 +32,12 @@ import org.jraf.intellijplugin.nyantray.VERSION
 import org.jraf.intellijplugin.nyantray.images.Images
 import org.jraf.intellijplugin.nyantray.util.asFormattedDate
 import org.jraf.intellijplugin.nyantray.util.asFormattedDuration
+import java.awt.CheckboxMenuItem
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.SystemTray
 import java.awt.TrayIcon
+import java.awt.event.ItemEvent
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.SwingUtilities
 
@@ -46,40 +48,55 @@ object Tray {
     private const val MENU_ITEM_WEEK = "This week: %s"
     private const val MENU_ITEM_DAY = "Today: %s"
     private const val MENU_ITEM_INFO = "(1d = 1 work day = 8 hours)"
+    private const val MENU_ITEM_STAY_VISIBLE = "Stay visible"
     private const val MENU_ITEM_ABOUT = "BoD NyanTray $VERSION - https://JRAF.org"
 
     private const val ANIMATION_DELAY_MS = 128L
     private var animationJob: Job? = null
 
     private val showing = AtomicBoolean(false)
+    private var needAdding = AtomicBoolean(true)
+
+    private fun disabledMenuItem(label: String) = MenuItem(label).apply {
+        isEnabled = false
+    }
 
     private val overallMenuItem by lazy {
-        MenuItem(getFormattedTimeCountOverall()).apply {
-            isEnabled = false
-        }
+        disabledMenuItem(getFormattedTimeCountOverall())
     }
 
     private val yearMenuItem by lazy {
-        MenuItem(getFormattedTimeCountYear()).apply {
-            isEnabled = false
-        }
+        disabledMenuItem(getFormattedTimeCountYear())
     }
 
     private val monthMenuItem by lazy {
-        MenuItem(getFormattedTimeCountMonth()).apply {
-            isEnabled = false
-        }
+        disabledMenuItem(getFormattedTimeCountMonth())
     }
     private val weekMenuItem by lazy {
-        MenuItem(getFormattedTimeCountWeek()).apply {
-            isEnabled = false
-        }
+        disabledMenuItem(getFormattedTimeCountWeek())
     }
     private val dayMenuItem by lazy {
-        MenuItem(getFormattedTimeCountDay()).apply {
-            isEnabled = false
+        disabledMenuItem(getFormattedTimeCountDay())
+    }
+
+    private val stayVisibleMenuItem by lazy {
+        CheckboxMenuItem(
+            MENU_ITEM_STAY_VISIBLE,
+            PersistedState.loadState()?.stayVisible == true,
+        ).apply {
+            addItemListener {
+                if (it.stateChange == ItemEvent.SELECTED) {
+                    PersistedState.persistStayVisible(true)
+                } else {
+                    PersistedState.persistStayVisible(false)
+                    if (!showing.get()) {
+                        removeIconFromSystemTray()
+                    }
+                }
+            }
         }
     }
+
     private val trayIcon: TrayIcon by lazy {
         TrayIcon(
             Images.nyan[0],
@@ -90,6 +107,8 @@ object Tray {
                 add(monthMenuItem)
                 add(weekMenuItem)
                 add(dayMenuItem)
+                add(MenuItem("-"))
+                add(stayVisibleMenuItem)
                 add(MenuItem("-"))
                 add(
                     MenuItem(MENU_ITEM_INFO).apply {
@@ -111,7 +130,10 @@ object Tray {
         showing.set(true)
         SwingUtilities.invokeLater {
             updateMenuItems()
-            SystemTray.getSystemTray().add(trayIcon)
+            if (needAdding.get()) {
+                needAdding.set(false)
+                SystemTray.getSystemTray().add(trayIcon)
+            }
             animationJob = GlobalScope.launch { startTrayIconAnimation() }
         }
     }
@@ -122,8 +144,17 @@ object Tray {
         showing.set(false)
         animationJob?.cancel()
         SwingUtilities.invokeLater {
-            SystemTray.getSystemTray().remove(trayIcon)
+            if (PersistedState.loadState()?.stayVisible == true) {
+                trayIcon.image = Images.idle
+            } else {
+                removeIconFromSystemTray()
+            }
         }
+    }
+
+    private fun removeIconFromSystemTray() {
+        SystemTray.getSystemTray().remove(trayIcon)
+        needAdding.set(true)
     }
 
     private fun updateMenuItems() {
@@ -150,4 +181,13 @@ object Tray {
     private fun getFormattedTimeCountMonth() = MENU_ITEM_MONTH.format(TimeCount.countedTimeMonth.asFormattedDuration())
     private fun getFormattedTimeCountWeek() = MENU_ITEM_WEEK.format(TimeCount.countedTimeWeek.asFormattedDuration())
     private fun getFormattedTimeCountDay() = MENU_ITEM_DAY.format(TimeCount.countedTimeDay.asFormattedDuration())
+}
+
+fun main() {
+    while (true) {
+        Tray.showIcon()
+        Thread.sleep(5000)
+        Tray.hideIcon()
+        Thread.sleep(5000)
+    }
 }
