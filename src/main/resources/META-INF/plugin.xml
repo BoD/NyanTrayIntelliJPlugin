@@ -1,7 +1,6 @@
 <idea-plugin>
     <id>org.jraf.intellijplugin.nyantray</id>
     <name>Nyan Tray</name>
-    <version>1.3.0</version>
     <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
 
     <description><![CDATA[
