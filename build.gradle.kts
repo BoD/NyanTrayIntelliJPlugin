@@ -25,18 +25,20 @@ dependencies {
 tasks {
     patchPluginXml {
         sinceBuild.set("212")
-        untilBuild.set("223.*")
+        untilBuild.set("231.*")
     }
 
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
         dependsOn("generateVersionKt")
     }
 
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
         dependsOn("generateVersionKt")
     }
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 // Generate a Version.kt file with a constant for the version name
@@ -58,3 +60,6 @@ tasks.register("generateVersionKt") {
 kotlin {
     sourceSets["main"].kotlin.srcDir(tasks.getByName("generateVersionKt").outputs.files)
 }
+
+// `./gradlew refreshVersions` to update dependencies
+// `./gradlew signPlugin` to build new version
