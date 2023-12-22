@@ -10,7 +10,7 @@ intellij {
 }
 
 group = "org.jraf"
-version = "1.3.1"
+version = "1.3.3"
 
 repositories {
     mavenCentral()
@@ -25,7 +25,7 @@ dependencies {
 tasks {
     patchPluginXml {
         sinceBuild.set("212")
-        untilBuild.set("231.*")
+        untilBuild.set("233.*")
     }
 
     compileKotlin {
