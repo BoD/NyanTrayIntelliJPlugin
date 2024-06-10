@@ -5,7 +5,7 @@ to let you know when work is ongoing.
 
 ![Illustration](/illus.gif?raw=true "Illustration")
 
-It shows a Nyan Cat **in your macOS menu bar** whenever something is "ongoing" (loading, compiling, building, searching, analyzing...)
+It shows a Nyan Cat **in your MacOS menu bar** whenever something is "ongoing" (loading, compiling, building, searching, analyzing...)
 
 This will help you switch to another window temporarily while knowing at a glance when the task is finished.
 

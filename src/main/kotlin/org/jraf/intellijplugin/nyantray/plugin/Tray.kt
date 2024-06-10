@@ -185,6 +185,14 @@ object Tray {
 
 fun main() {
     while (true) {
+//        // See https://github.com/dyorgio/macos-tray-icon-fixer
+//        System.setProperty("apple.awt.enableTemplateImages", "false")
+//        Tray.showIcon()
+//        Thread.sleep(5000)
+//        Tray.hideIcon()
+//        Thread.sleep(5000)
+
+        System.setProperty("apple.awt.enableTemplateImages", "true")
         Tray.showIcon()
         Thread.sleep(5000)
         Tray.hideIcon()

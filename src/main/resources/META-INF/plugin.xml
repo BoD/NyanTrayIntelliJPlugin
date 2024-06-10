@@ -4,7 +4,7 @@
     <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
 
     <description><![CDATA[
-        Shows a Nyan Cat in your macOS menu bar whenever something is "ongoing" (loading, compiling, building, searching, analyzing...)<br/>
+        Shows a Nyan Cat in your MacOS menu bar whenever something is "ongoing" (loading, compiling, building, searching, analyzing...)<br/>
         <br/>
         This will help you switch to another window temporarily while knowing at a glance when the task is finished.<br/>
         <br/>
@@ -19,6 +19,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <b>1.3.4 - 2024-06-10</b><br/>
+        <ul>
+        <li>Compatibility with the latest IntelliJ platform</li>
+        <li>Dependency updates</li>
+        </ul>
+        <br/>
+
         <b>1.3.3 - 2023-12-22</b><br/>
         <ul>
         <li>Compatibility with the latest IntelliJ platform</li>
