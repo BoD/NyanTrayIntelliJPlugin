@@ -192,7 +192,7 @@ fun main() {
 //        Tray.hideIcon()
 //        Thread.sleep(5000)
 
-        System.setProperty("apple.awt.enableTemplateImages", "true")
+//        System.setProperty("apple.awt.enableTemplateImages", "true")
         Tray.showIcon()
         Thread.sleep(5000)
         Tray.hideIcon()
