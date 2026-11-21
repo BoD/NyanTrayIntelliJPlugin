@@ -38,7 +38,7 @@ That's it!
 
 - If you like this plugin, you'll probably also like [this one](https://github.com/batya239/NyanProgressBar) ;)
 - There's also [this gradle plugin](https://github.com/passy/build-time-tracker-plugin) to count time spent waiting for gradle.
-- [This app](https://github.com/BoD/nyan) does the same thing, but for the whole OS, including an integration with coding agents.
+- [This app](https://github.com/BoD/nyan) does the same thing, but for the whole OS (e.g. hook it to your AI agents).
 
 ## Misc
 The time counting data is stored in `~/.nyantray`.
