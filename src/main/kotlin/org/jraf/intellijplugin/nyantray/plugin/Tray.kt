@@ -24,7 +24,6 @@
  */
 package org.jraf.intellijplugin.nyantray.plugin
 
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -135,7 +134,7 @@ object Tray {
         needAdding.set(false)
         SystemTray.getSystemTray().add(trayIcon)
       }
-      animationJob = GlobalScope.launch { startTrayIconAnimation() }
+      animationJob = pluginCoroutineScope.launch { startTrayIconAnimation() }
     }
   }
 

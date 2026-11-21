@@ -28,7 +28,6 @@ package org.jraf.intellijplugin.nyantray.plugin
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ApplicationComponent
 import com.intellij.openapi.progress.util.ProgressWindow
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,7 +59,7 @@ class NyanTrayApplicationComponent : ApplicationComponent {
       },
     )
 
-    loopJob = GlobalScope.launch {
+    loopJob = pluginCoroutineScope.launch {
       loop()
     }
   }
