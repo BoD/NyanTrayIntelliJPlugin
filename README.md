@@ -17,7 +17,7 @@ When clicking on it, the total waiting time (today, this week, this month, this 
 ## Why?
 To optimize your work/nonwork task switching ;)
 
-A lot of people switch to their browser/slack/minesweeper/whatever window while the project
+People often switch to their browser/slack/minesweeper/whatever window while the project
 is compiling. Having a system-wide "ongoing progress" indicator allows to 
 know right away when it's time to go back to work, even from another window or space.
 
