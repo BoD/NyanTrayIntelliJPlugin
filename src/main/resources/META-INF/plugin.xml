@@ -1,128 +1,33 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.jraf.intellijplugin.nyantray</id>
-    <name>Nyan Tray</name>
-    <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
+  <id>org.jraf.intellijplugin.nyantray</id>
+  <name>Nyan Tray</name>
+  <vendor email="BoD@JRAF.org" url="http://JRAF.org">Benoit 'BoD' Lubek</vendor>
 
-    <description><![CDATA[
-        Shows a Nyan Cat in your MacOS menu bar whenever something is "ongoing" (loading, compiling, building, searching, analyzing...)<br/>
-        <br/>
-        This will help you switch to another window temporarily while knowing at a glance when the task is finished.<br/>
-        <br/>
-        <b>Note: this has only been tested on macOS.</b><br/>
-        This uses the Swing <code>SystemTray</code> API so it may work on other OSes.<br/>
-        <br/>
-        <b>Development</b><br/>
-        <br/>
-        <a href="https://github.com/BoD/NyanTrayIntelliJPlugin/">https://github.com/BoD/NyanTrayIntelliJPlugin/</a>
-        <br/>
-        <br/>
-    ]]></description>
+  <description><![CDATA[
+    Shows a Nyan Cat in your MacOS menu bar whenever something is "ongoing" (loading, compiling, building, searching, analyzing...)<br/>
+    <br/>
+    This will help you switch to another window temporarily while knowing at a glance when the task is finished.<br/>
+    <br/>
+    <b>Note: this has only been tested on macOS.</b><br/>
+    This uses the Swing <code>SystemTray</code> API so it may work on other OSes.<br/>
+    <br/>
+    <b>Development</b><br/>
+    <br/>
+    <a href="https://github.com/BoD/NyanTrayIntelliJPlugin/">https://github.com/BoD/NyanTrayIntelliJPlugin/</a>
+    <br/>
+    <br/>
+  ]]></description>
 
-    <change-notes><![CDATA[
-        <b>1.3.6 - 2024-11-28</b><br/>
-        <ul>
-        <li>Idle image is now black and white</li>
-        <li>Compatibility with the latest IntelliJ platform</li>
-        <li>Dependency updates</li>
-        </ul>
-        <br/>
+  <depends>com.intellij.modules.platform</depends>
 
-        <b>1.3.5 - 2024-10-04</b><br/>
-        <ul>
-        <li>Compatibility with the latest IntelliJ platform</li>
-        <li>Dependency updates</li>
-        </ul>
-        <br/>
+  <extensions defaultExtensionNs="com.intellij">
+  </extensions>
 
-        <b>1.3.4 - 2024-06-10</b><br/>
-        <ul>
-        <li>Compatibility with the latest IntelliJ platform</li>
-        <li>Dependency updates</li>
-        </ul>
-        <br/>
+  <application-components>
+    <component>
+      <implementation-class>org.jraf.intellijplugin.nyantray.plugin.NyanTrayApplicationComponent</implementation-class>
+    </component>
+  </application-components>
 
-        <b>1.3.3 - 2023-12-22</b><br/>
-        <ul>
-        <li>Compatibility with the latest IntelliJ platform</li>
-        <li>Dependency updates</li>
-        </ul>
-        <br/>
-
-        <b>1.3.2 - 2023-08-08</b><br/>
-        <ul>
-        <li>Compatibility with the latest IntelliJ platform</li>
-        <li>Dependency updates</li>
-        </ul>
-        <br/>
-
-        <b>1.3.1 - 2023-05-01</b><br/>
-        <ul>
-        <li>Compatibility with the latest IntelliJ platform</li>
-        <li>Dependency updates</li>
-        </ul>
-        <br/>
-
-        <b>1.3.0 - 2022-12-28</b><br/>
-        <ul>
-        <li>Add an "Always visible" option so the tray icon and its information is always available</li>
-        <li>Dependency updates</li>
-        <li>Small code cleanup</li>
-        </ul>
-        <br/>
-
-        <b>1.2.0 - 2020-06-06</b><br/>
-        <ul>
-        <li>Display wasted time in "work days" (of 8 hours), instead of days of 24 hours</li>
-        <li>Dependency updates</li>
-        <li>Small code cleanup</li>
-        </ul>
-        <br/>
-
-        <b>1.1.2 - 2019-04-14</b><br/>
-        Update to the latest version of the IJ plugin platform, as well as Kotlin<br/>
-        <br/>
-
-        <b>1.1.1</b><br/>
-        Fix a bug that could happen when loading the time counting file<br/>
-        <br/>
-
-        <b>1.1.0</b><br/>
-        Add time counting features<br/>
-        <br/>
-
-        <b>1.0.5</b><br/>
-        Fixed a bug where the tray icon would sometimes not disappear - again<br/>
-        <br/>
-
-        <b>1.0.4</b><br/>
-        Fixed a bug where the tray icon would sometimes not disappear<br/>
-        <br/>
-
-        <b>1.0.3</b><br/>
-        Added even more logs to investigate the tray icon sometimes not disappearing<br/>
-        <br/>
-
-        <b>1.0.2</b><br/>
-        Added logs to investigate the tray icon sometimes not disappearing<br/>
-        <br/>
-
-        <b>1.0.1</b><br/>
-        Fixes a bug where the tray icon would sometimes not disappear<br/>
-        <br/>
-
-        <b>1.0.0</b><br/>
-        Initial release.<br/>
-    ]]>
-    </change-notes>
-
-    <depends>com.intellij.modules.platform</depends>
-
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
-
-    <application-components>
-        <component>
-            <implementation-class>org.jraf.intellijplugin.nyantray.plugin.NyanTrayApplicationComponent</implementation-class>
-        </component>
-    </application-components>
 </idea-plugin>

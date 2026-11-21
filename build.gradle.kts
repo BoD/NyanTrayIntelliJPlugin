@@ -1,65 +1,46 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.intellij")
-}
-
-intellij {
-    pluginName.set("nyantray")
-    version.set("212.5712.43")
-    type.set("IC")
-}
-
-group = "org.jraf"
-version = "1.3.6"
-
-repositories {
-    mavenCentral()
+  id("org.jetbrains.kotlin.jvm")
+  id("org.jetbrains.intellij.platform")
+  id("org.jetbrains.changelog")
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:_")
-    implementation(Kotlin.stdlib.jdk8)
-    implementation(KotlinX.coroutines.core)
+  testImplementation("junit:junit:4.13.2")
+
+  // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
+  intellijPlatform {
+    intellijIdea("2026.2.5")
+    testFramework(TestFrameworkType.Platform)
+  }
 }
 
-tasks {
-    patchPluginXml {
-        sinceBuild.set("212")
-        untilBuild.set(providers.provider { null })
-    }
-
-    compileKotlin {
-        dependsOn("generateVersionKt")
-    }
-
-    compileTestKotlin {
-        dependsOn("generateVersionKt")
-    }
-}
-
-kotlin {
-    jvmToolchain(11)
-}
-
-// Generate a Version.kt file with a constant for the version name
-tasks.register("generateVersionKt") {
-    val outputDir = layout.buildDirectory.dir("generated/source/kotlin").get().asFile
-    outputs.dir(outputDir)
-    doFirst {
-        val outputWithPackageDir = File(outputDir, "org/jraf/intellijplugin/nyantray").apply { mkdirs() }
-        File(outputWithPackageDir, "Version.kt").writeText(
-            """
-                package org.jraf.intellijplugin.nyantray
-
-                const val VERSION = "v${project.version}"
-            """.trimIndent()
-        )
-    }
+val generateVersionKtTask: TaskProvider<Task> = tasks.register("generateVersionKt") {
+  description = "Generates Version.kt"
+  val outputDir = layout.buildDirectory.dir("generated/source/kotlin").get().asFile
+  outputs.dir(outputDir)
+  val versionProvider = providers.provider { rootProject.version.toString() }
+  inputs.property("version", versionProvider)
+  doFirst {
+    val outputWithPackageDir = File(outputDir, "org/jraf/intellijplugin/nyantray").apply { mkdirs() }
+    File(outputWithPackageDir, "Version.kt").writeText(
+      """
+        package org.jraf.intellijplugin.nyantray
+        const val VERSION = "v${versionProvider.get()}"
+      """.trimIndent()
+    )
+  }
 }
 
 kotlin {
-    sourceSets["main"].kotlin.srcDir(tasks.getByName("generateVersionKt").outputs.files)
+  sourceSets {
+    main {
+      kotlin {
+        srcDir(generateVersionKtTask)
+      }
+    }
+  }
 }
 
-// `./gradlew refreshVersions` to update dependencies
 // `./gradlew signPlugin` to build new version

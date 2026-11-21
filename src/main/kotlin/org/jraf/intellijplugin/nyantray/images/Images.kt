@@ -28,28 +28,28 @@ import java.awt.Image
 import java.awt.Toolkit
 
 object Images {
-    val nyan: Array<Image> by lazy {
-        arrayOf(
-            getImage("nyan00.png"),
-            getImage("nyan01.png"),
-            getImage("nyan02.png"),
-            getImage("nyan03.png"),
-            getImage("nyan04.png"),
-            getImage("nyan05.png"),
-            getImage("nyan06.png"),
-            getImage("nyan07.png"),
-            getImage("nyan08.png"),
-            getImage("nyan09.png"),
-            getImage("nyan10.png"),
-            getImage("nyan11.png")
-        )
-    }
+  val nyan: Array<Image> by lazy {
+    arrayOf(
+      getImage("nyan00.png"),
+      getImage("nyan01.png"),
+      getImage("nyan02.png"),
+      getImage("nyan03.png"),
+      getImage("nyan04.png"),
+      getImage("nyan05.png"),
+      getImage("nyan06.png"),
+      getImage("nyan07.png"),
+      getImage("nyan08.png"),
+      getImage("nyan09.png"),
+      getImage("nyan10.png"),
+      getImage("nyan11.png"),
+    )
+  }
 
-    val idle by lazy { getImage("idle.png") }
+  val idle by lazy { getImage("idle.png") }
 
-    private fun getImage(imageName: String): Image {
-        val javaClass = Images::class.java
-        val resourcesPath = javaClass.`package`.name.replace('.', '/')
-        return Toolkit.getDefaultToolkit().getImage(javaClass.classLoader.getResource("$resourcesPath/$imageName"))
-    }
+  private fun getImage(imageName: String): Image {
+    val javaClass = Images::class.java
+    val resourcesPath = javaClass.`package`.name.replace('.', '/')
+    return Toolkit.getDefaultToolkit().getImage(javaClass.classLoader.getResource("$resourcesPath/$imageName"))
+  }
 }

@@ -31,75 +31,75 @@ import org.jraf.intellijplugin.nyantray.util.Timestamp
 import java.io.File
 
 data class PersistedState(
-    val firstUse: Timestamp,
-    val dayOfYear: Int,
-    val weekOfYear: Int,
-    val month: Int,
-    val year: Int,
-    val countedTimeDay: Millisecond,
-    val countedTimeWeek: Millisecond,
-    val countedTimeMonth: Millisecond,
-    val countedTimeYear: Millisecond,
-    val countedTimeOverall: Millisecond,
-    val stayVisible: Boolean?,
+  val firstUse: Timestamp,
+  val dayOfYear: Int,
+  val weekOfYear: Int,
+  val month: Int,
+  val year: Int,
+  val countedTimeDay: Millisecond,
+  val countedTimeWeek: Millisecond,
+  val countedTimeMonth: Millisecond,
+  val countedTimeYear: Millisecond,
+  val countedTimeOverall: Millisecond,
+  val stayVisible: Boolean?,
 ) {
-    companion object {
-        private val persistedStateFile by lazy { File(System.getProperty("user.home"), ".nyantray") }
-        private val gson by lazy { Gson() }
+  companion object {
+    private val persistedStateFile by lazy { File(System.getProperty("user.home"), ".nyantray") }
+    private val gson by lazy { Gson() }
 
-        fun persistState(
-            firstUse: Timestamp,
-            dayOfYear: Int,
-            weekOfYear: Int,
-            month: Int,
-            year: Int,
-            countedTimeDay: Millisecond,
-            countedTimeWeek: Millisecond,
-            countedTimeMonth: Millisecond,
-            countedTimeYear: Millisecond,
-            countedTimeOverall: Millisecond,
-        ) {
-            val state = loadState()?.copy(
-                firstUse = firstUse,
-                dayOfYear = dayOfYear,
-                weekOfYear = weekOfYear,
-                month = month,
-                year = year,
-                countedTimeDay = countedTimeDay,
-                countedTimeWeek = countedTimeWeek,
-                countedTimeMonth = countedTimeMonth,
-                countedTimeYear = countedTimeYear,
-                countedTimeOverall = countedTimeOverall,
-            ) ?: PersistedState(
-                firstUse = firstUse,
-                dayOfYear = dayOfYear,
-                weekOfYear = weekOfYear,
-                month = month,
-                year = year,
-                countedTimeDay = countedTimeDay,
-                countedTimeWeek = countedTimeWeek,
-                countedTimeMonth = countedTimeMonth,
-                countedTimeYear = countedTimeYear,
-                countedTimeOverall = countedTimeOverall,
-                stayVisible = false,
-            )
-            persistState(state)
-        }
-
-        private fun persistState(state: PersistedState) {
-            persistedStateFile.writeText(gson.toJson(state))
-        }
-
-        fun loadState(): PersistedState? {
-            if (!persistedStateFile.exists()) return null
-            return gson.fromJson(persistedStateFile.readText(), PersistedState::class.java)
-        }
-
-        fun persistStayVisible(stayVisible: Boolean) {
-            val state = loadState() ?: return
-            persistState(
-                state.copy(stayVisible = stayVisible),
-            )
-        }
+    fun persistState(
+      firstUse: Timestamp,
+      dayOfYear: Int,
+      weekOfYear: Int,
+      month: Int,
+      year: Int,
+      countedTimeDay: Millisecond,
+      countedTimeWeek: Millisecond,
+      countedTimeMonth: Millisecond,
+      countedTimeYear: Millisecond,
+      countedTimeOverall: Millisecond,
+    ) {
+      val state = loadState()?.copy(
+        firstUse = firstUse,
+        dayOfYear = dayOfYear,
+        weekOfYear = weekOfYear,
+        month = month,
+        year = year,
+        countedTimeDay = countedTimeDay,
+        countedTimeWeek = countedTimeWeek,
+        countedTimeMonth = countedTimeMonth,
+        countedTimeYear = countedTimeYear,
+        countedTimeOverall = countedTimeOverall,
+      ) ?: PersistedState(
+        firstUse = firstUse,
+        dayOfYear = dayOfYear,
+        weekOfYear = weekOfYear,
+        month = month,
+        year = year,
+        countedTimeDay = countedTimeDay,
+        countedTimeWeek = countedTimeWeek,
+        countedTimeMonth = countedTimeMonth,
+        countedTimeYear = countedTimeYear,
+        countedTimeOverall = countedTimeOverall,
+        stayVisible = false,
+      )
+      persistState(state)
     }
+
+    private fun persistState(state: PersistedState) {
+      persistedStateFile.writeText(gson.toJson(state))
+    }
+
+    fun loadState(): PersistedState? {
+      if (!persistedStateFile.exists()) return null
+      return gson.fromJson(persistedStateFile.readText(), PersistedState::class.java)
+    }
+
+    fun persistStayVisible(stayVisible: Boolean) {
+      val state = loadState() ?: return
+      persistState(
+        state.copy(stayVisible = stayVisible),
+      )
+    }
+  }
 }

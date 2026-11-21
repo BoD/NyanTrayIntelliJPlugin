@@ -22,89 +22,89 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jraf.intellijplugin.nyantray.plugin
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ApplicationComponent
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.util.ProgressWindow
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
+@Suppress("DEPRECATION")
 class NyanTrayApplicationComponent : ApplicationComponent {
-    companion object {
-        private const val COMPONENT_NAME = "NyanTray"
+  companion object {
+    private const val COMPONENT_NAME = "NyanTray"
 
-        private val LOGGER = Logger.getInstance(NyanTrayApplicationComponent::class.java)
+    private const val LOOP_DELAY_MS = 1500L
+  }
 
-        private const val LOOP_DELAY_MS = 1500L
-    }
+  private val progressWindows = mutableSetOf<ProgressWindow>()
+  private var loopJob: Job? = null
+  private var progressOngoing: Boolean = false
 
-    private val progressWindows = mutableSetOf<ProgressWindow>()
-    private var loopJob: Job? = null
-    private var progressOngoing: Boolean = false
+  override fun getComponentName() = COMPONENT_NAME
 
-    override fun getComponentName() = COMPONENT_NAME
-
-    override fun initComponent() {
-        val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
-        messageBusConnection.subscribe(ProgressWindow.TOPIC, ProgressWindow.Listener { progressWindow ->
-            synchronized(progressWindows) {
-                progressWindows += progressWindow
-            }
-        })
-
-        loopJob = GlobalScope.launch {
-            loop()
+  @Deprecated("Deprecated in Java")
+  override fun initComponent() {
+    val messageBusConnection = ApplicationManager.getApplication().messageBus.connect()
+    messageBusConnection.subscribe(
+      ProgressWindow.TOPIC,
+      ProgressWindow.Listener { progressWindow ->
+        synchronized(progressWindows) {
+          progressWindows += progressWindow
         }
+      },
+    )
+
+    loopJob = GlobalScope.launch {
+      loop()
     }
+  }
 
-    override fun disposeComponent() {
-        loopJob?.cancel()
-    }
+  @Deprecated("Deprecated in Java")
+  override fun disposeComponent() {
+    loopJob?.cancel()
+  }
 
-    private suspend fun loop() {
-        while (true) {
-            synchronized(progressWindows) {
-                val i = progressWindows.iterator()
-                while (i.hasNext()) {
-                    val progressWindow = i.next()
-                    if (!progressWindow.isRunning) {
-                        i.remove()
-                    }
-                }
-
-                if (progressWindows.isEmpty()) {
-                    if (progressOngoing) {
-                        progressOngoing = false
-                        onProgressOngoing(false)
-                    }
-                } else {
-                    if (!progressOngoing) {
-                        progressOngoing = true
-                        onProgressOngoing(true)
-                    }
-                }
-            }
-
-            delay(LOOP_DELAY_MS)
+  private suspend fun loop() {
+    while (true) {
+      synchronized(progressWindows) {
+        val i = progressWindows.iterator()
+        while (i.hasNext()) {
+          val progressWindow = i.next()
+          if (!progressWindow.isRunning) {
+            i.remove()
+          }
         }
-    }
 
-    private fun onProgressOngoing(progressOngoing: Boolean) {
-        if (progressOngoing) {
-            TimeCount.startCountingTime()
-            Tray.showIcon()
+        if (progressWindows.isEmpty()) {
+          if (progressOngoing) {
+            progressOngoing = false
+            onProgressOngoing(false)
+          }
         } else {
-            TimeCount.stopCountingTime()
-            Tray.hideIcon()
+          if (!progressOngoing) {
+            progressOngoing = true
+            onProgressOngoing(true)
+          }
         }
-    }
+      }
 
-    private fun log(s: String) {
-        LOGGER.info(s)
-        println(s)
+      delay(LOOP_DELAY_MS.milliseconds)
     }
+  }
+
+  private fun onProgressOngoing(progressOngoing: Boolean) {
+    if (progressOngoing) {
+      TimeCount.startCountingTime()
+      Tray.showIcon()
+    } else {
+      TimeCount.stopCountingTime()
+      Tray.hideIcon()
+    }
+  }
 }

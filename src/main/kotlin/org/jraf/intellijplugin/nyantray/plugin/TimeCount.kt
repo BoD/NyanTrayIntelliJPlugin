@@ -29,105 +29,105 @@ import org.jraf.intellijplugin.nyantray.util.Timestamp
 import java.util.Calendar
 
 object TimeCount {
-    var firstUse: Timestamp = System.currentTimeMillis()
-    private var countingStartTime: Timestamp? = null
-    private var dayOfYear: Int = getDayOfYear()
-    private var weekOfYear: Int = getWeekOfYear()
-    private var month: Int = getMonth()
-    private var year: Int = getYear()
+  var firstUse: Timestamp = System.currentTimeMillis()
+  private var countingStartTime: Timestamp? = null
+  private var dayOfYear: Int = getDayOfYear()
+  private var weekOfYear: Int = getWeekOfYear()
+  private var month: Int = getMonth()
+  private var year: Int = getYear()
 
-    var countedTimeDay: Millisecond = 0
-    var countedTimeWeek: Millisecond = 0
-    var countedTimeMonth: Millisecond = 0
-    var countedTimeYear: Millisecond = 0
-    var countedTimeOverall: Millisecond = 0
+  var countedTimeDay: Millisecond = 0
+  var countedTimeWeek: Millisecond = 0
+  var countedTimeMonth: Millisecond = 0
+  var countedTimeYear: Millisecond = 0
+  var countedTimeOverall: Millisecond = 0
 
-    init {
-        loadState()
-        resetTimeCountIfNeeded()
+  init {
+    loadState()
+    resetTimeCountIfNeeded()
+  }
+
+  private fun addCountedTime(countedTime: Millisecond) {
+    resetTimeCountIfNeeded()
+
+    countedTimeDay += countedTime
+    countedTimeWeek += countedTime
+    countedTimeMonth += countedTime
+    countedTimeYear += countedTime
+    countedTimeOverall += countedTime
+  }
+
+  fun startCountingTime() {
+    if (countingStartTime != null) return
+    countingStartTime = System.currentTimeMillis()
+  }
+
+  fun stopCountingTime() {
+    countingStartTime.let {
+      if (it == null) return
+      addCountedTime(System.currentTimeMillis() - it)
+    }
+    countingStartTime = null
+    persistState()
+  }
+
+  private fun resetTimeCountIfNeeded() {
+    val currentDayOfYear = getDayOfYear()
+    if (dayOfYear != currentDayOfYear) {
+      dayOfYear = currentDayOfYear
+      countedTimeDay = 0
     }
 
-    private fun addCountedTime(countedTime: Millisecond) {
-        resetTimeCountIfNeeded()
-
-        countedTimeDay += countedTime
-        countedTimeWeek += countedTime
-        countedTimeMonth += countedTime
-        countedTimeYear += countedTime
-        countedTimeOverall += countedTime
+    val currentWeekOfYear = getWeekOfYear()
+    if (weekOfYear != currentWeekOfYear) {
+      weekOfYear = currentWeekOfYear
+      countedTimeWeek = 0
     }
 
-    fun startCountingTime() {
-        if (countingStartTime != null) return
-        countingStartTime = System.currentTimeMillis()
+    val currentMonth = getMonth()
+    if (month != currentMonth) {
+      month = currentMonth
+      countedTimeMonth = 0
     }
 
-    fun stopCountingTime() {
-        countingStartTime.let {
-            if (it == null) return
-            addCountedTime(System.currentTimeMillis() - it)
-        }
-        countingStartTime = null
-        persistState()
+    val currentYear = getYear()
+    if (year != currentYear) {
+      year = currentYear
+      countedTimeYear = 0
     }
+  }
 
-    private fun resetTimeCountIfNeeded() {
-        val currentDayOfYear = getDayOfYear()
-        if (dayOfYear != currentDayOfYear) {
-            dayOfYear = currentDayOfYear
-            countedTimeDay = 0
-        }
+  private fun getDayOfYear() = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
+  private fun getWeekOfYear() = Calendar.getInstance()[Calendar.WEEK_OF_YEAR]
+  private fun getMonth() = Calendar.getInstance()[Calendar.MONTH]
+  private fun getYear() = Calendar.getInstance()[Calendar.YEAR]
 
-        val currentWeekOfYear = getWeekOfYear()
-        if (weekOfYear != currentWeekOfYear) {
-            weekOfYear = currentWeekOfYear
-            countedTimeWeek = 0
-        }
+  private fun persistState() {
+    PersistedState.persistState(
+      firstUse = firstUse,
+      dayOfYear = dayOfYear,
+      weekOfYear = weekOfYear,
+      month = month,
+      year = year,
+      countedTimeDay = countedTimeDay,
+      countedTimeWeek = countedTimeWeek,
+      countedTimeMonth = countedTimeMonth,
+      countedTimeYear = countedTimeYear,
+      countedTimeOverall = countedTimeOverall,
+    )
+  }
 
-        val currentMonth = getMonth()
-        if (month != currentMonth) {
-            month = currentMonth
-            countedTimeMonth = 0
-        }
-
-        val currentYear = getYear()
-        if (year != currentYear) {
-            year = currentYear
-            countedTimeYear = 0
-        }
-    }
-
-    private fun getDayOfYear() = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
-    private fun getWeekOfYear() = Calendar.getInstance()[Calendar.WEEK_OF_YEAR]
-    private fun getMonth() = Calendar.getInstance()[Calendar.MONTH]
-    private fun getYear() = Calendar.getInstance()[Calendar.YEAR]
-
-    private fun persistState() {
-        PersistedState.persistState(
-            firstUse = firstUse,
-            dayOfYear = dayOfYear,
-            weekOfYear = weekOfYear,
-            month = month,
-            year = year,
-            countedTimeDay = countedTimeDay,
-            countedTimeWeek = countedTimeWeek,
-            countedTimeMonth = countedTimeMonth,
-            countedTimeYear = countedTimeYear,
-            countedTimeOverall = countedTimeOverall
-        )
-    }
-
-    private fun loadState() {
-        val persistedState = PersistedState.loadState() ?: return
-        firstUse = persistedState.firstUse
-        dayOfYear = persistedState.dayOfYear
-        weekOfYear = persistedState.weekOfYear
-        month = persistedState.month
-        year = persistedState.year
-        countedTimeDay = persistedState.countedTimeDay
-        countedTimeWeek = persistedState.countedTimeWeek
-        countedTimeMonth = persistedState.countedTimeMonth
-        countedTimeYear = persistedState.countedTimeYear
-        countedTimeOverall = persistedState.countedTimeOverall
-    }
+  private fun loadState() {
+    val persistedState = PersistedState.loadState() ?: return
+    firstUse = persistedState.firstUse
+    dayOfYear = persistedState.dayOfYear
+    weekOfYear = persistedState.weekOfYear
+    month = persistedState.month
+    year = persistedState.year
+    countedTimeDay = persistedState.countedTimeDay
+    countedTimeWeek = persistedState.countedTimeWeek
+    countedTimeMonth = persistedState.countedTimeMonth
+    countedTimeYear = persistedState.countedTimeYear
+    countedTimeOverall = persistedState.countedTimeOverall
+  }
 }

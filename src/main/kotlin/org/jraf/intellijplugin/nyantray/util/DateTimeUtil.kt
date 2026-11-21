@@ -39,37 +39,37 @@ typealias Millisecond = Long
 typealias Timestamp = Long
 
 private val dateTimeFormatter: DateTimeFormatter by lazy {
-    var pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, Locale.getDefault())
-    pattern = pattern.replace("yy", "yyyy");
-    DateTimeFormatter.ofPattern(pattern)
+  var pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, Locale.getDefault())
+  pattern = pattern.replace("yy", "yyyy");
+  DateTimeFormatter.ofPattern(pattern)
 }
 
 fun Millisecond.asFormattedDuration(): String {
-    if (this < TimeUnit.MINUTES.toMillis(1)) {
-        return "${this / TimeUnit.SECONDS.toMillis(1)}s"
-    }
-    if (this < TimeUnit.HOURS.toMillis(1)) {
-        return "${this / TimeUnit.MINUTES.toMillis(1)}m"
-    }
-    if (this < TimeUnit.HOURS.toMillis(8)) {
-        val remainingMinutesInMs = this % TimeUnit.HOURS.toMillis(1)
-        val remainingMinutes = remainingMinutesInMs / TimeUnit.MINUTES.toMillis(1)
-        val remainingMinutesStr = if (remainingMinutes == 0L) "" else "${remainingMinutes}m"
-        return "${this / TimeUnit.HOURS.toMillis(1)}h$remainingMinutesStr"
-    }
-
-    val workingDays = this / TimeUnit.HOURS.toMillis(8)
-    val remainingHoursInMs = this % TimeUnit.HOURS.toMillis(8)
-    val remainingHours = remainingHoursInMs / TimeUnit.HOURS.toMillis(1)
-    val remainingHoursStr = if (remainingHours == 0L) "" else "${remainingHours}h"
-
+  if (this < TimeUnit.MINUTES.toMillis(1)) {
+    return "${this / TimeUnit.SECONDS.toMillis(1)}s"
+  }
+  if (this < TimeUnit.HOURS.toMillis(1)) {
+    return "${this / TimeUnit.MINUTES.toMillis(1)}m"
+  }
+  if (this < TimeUnit.HOURS.toMillis(8)) {
     val remainingMinutesInMs = this % TimeUnit.HOURS.toMillis(1)
     val remainingMinutes = remainingMinutesInMs / TimeUnit.MINUTES.toMillis(1)
     val remainingMinutesStr = if (remainingMinutes == 0L) "" else "${remainingMinutes}m"
+    return "${this / TimeUnit.HOURS.toMillis(1)}h$remainingMinutesStr"
+  }
 
-    return "${workingDays}d$remainingHoursStr$remainingMinutesStr"
+  val workingDays = this / TimeUnit.HOURS.toMillis(8)
+  val remainingHoursInMs = this % TimeUnit.HOURS.toMillis(8)
+  val remainingHours = remainingHoursInMs / TimeUnit.HOURS.toMillis(1)
+  val remainingHoursStr = if (remainingHours == 0L) "" else "${remainingHours}h"
+
+  val remainingMinutesInMs = this % TimeUnit.HOURS.toMillis(1)
+  val remainingMinutes = remainingMinutesInMs / TimeUnit.MINUTES.toMillis(1)
+  val remainingMinutesStr = if (remainingMinutes == 0L) "" else "${remainingMinutes}m"
+
+  return "${workingDays}d$remainingHoursStr$remainingMinutesStr"
 }
 
 fun Timestamp.asFormattedDate(): String {
-    return dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(this), TimeZone.getDefault().toZoneId()))
+  return dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(this), TimeZone.getDefault().toZoneId()))
 }
