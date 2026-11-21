@@ -51,7 +51,7 @@ object Tray {
   private const val MENU_ITEM_STAY_VISIBLE = "Stay visible"
   private const val MENU_ITEM_ABOUT = "BoD NyanTray $VERSION - https://JRAF.org"
 
-  private const val ANIMATION_DELAY_MS = 128L
+  private val ANIMATION_DELAY = 128.milliseconds
   private var animationJob: Job? = null
 
   private val showing = AtomicBoolean(false)
@@ -169,7 +169,7 @@ object Tray {
     while (true) {
       for (i in Images.nyan) {
         trayIcon.image = i
-        delay(ANIMATION_DELAY_MS.milliseconds)
+        delay(ANIMATION_DELAY)
       }
     }
   }

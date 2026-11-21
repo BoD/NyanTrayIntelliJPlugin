@@ -1,0 +1,11 @@
+mutation SetBusyMutation($processId: ProcessId!, $description: String) {
+  setBusy(processId: $processId, description: $description) {
+    processId
+  }
+}
+
+mutation SetIdleMutation($processId: ProcessId!) {
+  setIdle(processId: $processId) {
+    processId
+  }
+}

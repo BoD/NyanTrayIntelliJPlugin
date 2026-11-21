@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Code modernization, cleanup, and dependency updates
+- Integration with the [Nyan app](https://github.com/BoD/nyan)
+
 ## 1.3.6 - 2024-11-28
 
 - Idle image is now black and white
