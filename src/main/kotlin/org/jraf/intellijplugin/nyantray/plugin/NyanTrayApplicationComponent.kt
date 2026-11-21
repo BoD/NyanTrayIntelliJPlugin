@@ -38,12 +38,13 @@ class NyanTrayApplicationComponent : ApplicationComponent {
   companion object {
     private const val COMPONENT_NAME = "NyanTray"
 
-    private const val LOOP_DELAY_MS = 1500L
+    private val LOOP_DELAY = 2000.milliseconds
   }
 
   private val progressWindows = mutableSetOf<ProgressWindow>()
   private var loopJob: Job? = null
   private var progressOngoing: Boolean = false
+  private val nyanClient = NyanClient()
 
   override fun getComponentName() = COMPONENT_NAME
 
@@ -71,6 +72,7 @@ class NyanTrayApplicationComponent : ApplicationComponent {
 
   private suspend fun loop() {
     while (true) {
+      var isEmpty = false
       synchronized(progressWindows) {
         val i = progressWindows.iterator()
         while (i.hasNext()) {
@@ -79,31 +81,35 @@ class NyanTrayApplicationComponent : ApplicationComponent {
             i.remove()
           }
         }
-
-        if (progressWindows.isEmpty()) {
-          if (progressOngoing) {
-            progressOngoing = false
-            onProgressOngoing(false)
-          }
-        } else {
-          if (!progressOngoing) {
-            progressOngoing = true
-            onProgressOngoing(true)
-          }
-        }
+        isEmpty = progressWindows.isEmpty()
       }
 
-      delay(LOOP_DELAY_MS.milliseconds)
+      if (isEmpty) {
+        if (progressOngoing) {
+          progressOngoing = false
+          onProgressOngoing(false)
+        }
+      } else {
+        if (!progressOngoing) {
+          progressOngoing = true
+          onProgressOngoing(true)
+        }
+      }
+      delay(LOOP_DELAY)
     }
   }
 
-  private fun onProgressOngoing(progressOngoing: Boolean) {
+  private suspend fun onProgressOngoing(progressOngoing: Boolean) {
     if (progressOngoing) {
       TimeCount.startCountingTime()
-      Tray.showIcon()
+      if (!nyanClient.setBusy()) {
+        Tray.showIcon()
+      }
     } else {
       TimeCount.stopCountingTime()
-      Tray.hideIcon()
+      if (!nyanClient.setIdle()) {
+        Tray.hideIcon()
+      }
     }
   }
 }
